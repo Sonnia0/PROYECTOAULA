@@ -1,8 +1,6 @@
 <?php
 include 'conexion.php'; // Incluir archivo de conexión
 
-
-
 // Verificar si se ha enviado el formulario y los campos obligatorios están presentes
 if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_FILES["imagen"]["name"]) && !empty($_POST["nombre"]) && !empty($_POST["precio"]) && !empty($_POST["descripcion"])) {
     // Preparar datos para la inserción
@@ -28,20 +26,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_FILES["imagen"]["name"]) &&
         $sql = "INSERT INTO productos (nombre_producto, precio_producto, descripcion_producto, imagen_producto) 
                 VALUES ('$nombre', $precio, '$descripcion', '$ruta_imagen')";
 
-if ($conn->query($sql) === TRUE) {
-    echo "El producto se registró correctamente.";
-    header("Location: crear_producto.php");
-    exit();
+        if ($conn->query($sql) === TRUE) {
+            $mensaje = "El producto se registró correctamente.";
+            $status = "success";
+        } else {
+            $mensaje = "Error: " . $sql . "<br>" . $conn->error;
+            $status = "error";
+        }
+    } else {
+        $mensaje = "Error al subir el archivo.";
+        $status = "error";
+    }
 } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-}
-} else {
-echo "Error al subir el archivo.";
-}
-} else {
-echo "Todos los campos son obligatorios.";
+    $mensaje = "Todos los campos son obligatorios.";
+    $status = "error";
 }
 
 // Cerrar conexión
 $conn->close();
+
+// Redirigir de vuelta al formulario con el mensaje y el estado
+header("Location: crear_producto.php?mensaje=" . urlencode($mensaje) . "&status=" . $status);
+exit();
 ?>

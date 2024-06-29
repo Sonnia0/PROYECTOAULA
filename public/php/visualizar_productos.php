@@ -25,17 +25,21 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizar Productos</title>
     <link href="../css/tailwind.css" rel="stylesheet">
+    <link href="../css/modalProducto.css" rel="stylesheet">
+    <script src="../js/modal_Eliminar_Producto.js" defer></script>
 </head>
 
 <body class="bg-gray-900 text-white flex flex-col min-h-screen">
 
     <!-- Banner -->
-    <header class="bg-purple-500 text-gray-900 py-10">
-        <div class="container mx-auto text-center">
-            <h1 class="text-5xl font-bold">Productos Registrados</h1>
+    <header class='bg-purple-500 text-gray-900 py-4 relative'>
+        <div class='absolute top-0 left-0  '>
+            <a href='../index.html' class='bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg text-xl shadow-lg'>Regresar al Índice</a>
+        </div>
+        <div class='container mx-auto text-center'>
+            <h1 class='text-5xl font-bold'>Productos Registrados</h1>
         </div>
     </header>
-
     <!-- Contenido principal -->
     <main class="container mx-auto my-10 flex-grow flex justify-center items-center">
         <div class="max-w-4xl w-full overflow-x-auto">
@@ -51,7 +55,7 @@ $conn->close();
                                 <p class='text-gray-400'>" . $fila['descripcion_producto'] . "</p>
                                 <div class='mt-4'>
                                     <a href='./editar_producto.php?id=" . $fila['id'] . "' class='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mr-2'>Editar</a>
-                                    <a href='./eliminar_producto.php?id=" . $fila['id'] . "' class='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg'>Eliminar</a>
+                                    <button onclick='confirmarEliminacion(" . $fila['id'] . ")' class='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg'>Eliminar</button>
                                 </div>
                             </div>";
                     }
@@ -65,6 +69,19 @@ $conn->close();
             <?php endif; ?>
         </div>
     </main>
+
+    <!-- Modal -->
+    <div id='modal' class='modal'>
+        <div class='modal-content'>
+            <span class='close' onclick='cerrarModal()'>&times;</span>
+            <h2 id='modal-title' class='text-2xl font-bold mb-4'>Confirmar Eliminación</h2>
+            <p id='modalMensaje' class='text-lg'>¿Estás seguro de que deseas eliminar este producto?</p>
+            <div class='flex justify-end mt-4'>
+                <button class='bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mr-2' onclick='cerrarModal()'>Cancelar</button>
+                <button id='confirmDeleteButton' class='bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg'>Eliminar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-gray-400 py-6 mt-auto">

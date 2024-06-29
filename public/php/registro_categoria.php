@@ -26,17 +26,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_FILES["imagen"]["name"]) &&
                 VALUES ('$nombre', '$descripcion', '$ruta_imagen')";
 
         if ($conn->query($sql) === TRUE) {
-            echo "La categoría se registró correctamente.";
+            $mensaje = "La categoría se registró correctamente.";
+            $status = "success";
         } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
+            $mensaje = "Error: " . $sql . "<br>" . $conn->error;
+            $status = "error";
         }
     } else {
-        echo "Error al subir el archivo.";
+        $mensaje = "Error al subir el archivo.";
+        $status = "error";
     }
 } else {
-    echo "Todos los campos son obligatorios.";
+    $mensaje = "Todos los campos son obligatorios.";
+    $status = "error";
 }
 
 // Cerrar conexión
 $conn->close();
+
+// Redirigir de vuelta al formulario con el mensaje y el estado
+header("Location: crear_categoria.php?mensaje=" . urlencode($mensaje) . "&status=" . $status);
+exit();
 ?>
